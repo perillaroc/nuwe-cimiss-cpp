@@ -44,12 +44,16 @@ struct ResponseData{
     explicit ResponseData(RequestInfo& request_info);
     virtual ~ResponseData() = default;
 
+    virtual void LoadFromProtobufContent(const std::string& content) = 0;
+
     RequestInfo request;
 };
 
 
 struct Array2D: public ResponseData {
     Array2D() = default;
+
+    void LoadFromProtobufContent(const std::string& content) override;
 
     void LoadFromProtobufObject(cma::music::pb::RetArray2D* ret_array_2d);
 

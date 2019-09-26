@@ -2,13 +2,17 @@
 #include <nuwe_cimiss/client.h>
 #include <map>
 
-int main() {
+int main(int argc, char** argv) {
     std::string user;
     std::string password;
+    std::string config_file;
 
     CLI::App app{ "example_array_2d" };
     app.add_option("--user", user, "user name")->required();
     app.add_option("--password", password, "user password")->required();
+    app.add_option("--client-config", config_file, "config file");
+
+    CLI11_PARSE(app, argc, argv);
 
     const std::string interface_id = "getSurfEleByTimeRange";
     const std::string server_id = "NMIC_MUSIC_CMADAAS";
@@ -24,7 +28,7 @@ int main() {
     nuwe_cimiss::CimissClientConfig config;
     config.server_id = server_id;
 
-    nuwe_cimiss::CimissClient client{ config };
+    nuwe_cimiss::CimissClient client{config, config_file};
     client.connect(user, password);
     auto result = client.callAPI_to_array2D(interface_id, params, server_id);
 

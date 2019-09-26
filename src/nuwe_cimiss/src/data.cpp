@@ -50,6 +50,17 @@ request(request_info)
 {
 }
 
+void Array2D::LoadFromProtobufContent(const std::string& content)
+{
+    cma::music::pb::RetArray2D ret_array_2d;
+    auto result = ret_array_2d.ParseFromString(content);
+    if(!result)
+    {
+        return;
+    }
+    LoadFromProtobufObject(&ret_array_2d);
+}
+
 void Array2D::LoadFromProtobufObject(cma::music::pb::RetArray2D* ret_array_2d)
 {
     request = RequestInfo::CreateFromProtobufObject(ret_array_2d->request());

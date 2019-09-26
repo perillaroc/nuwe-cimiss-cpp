@@ -2,13 +2,12 @@ project("nuwe_cimiss")
 
 add_library(nuwe_cimiss STATIC)
 
-# set(Protobuf_DEBUG ON)
-# set(Protobuf_USE_STATIC_LIBS ON)
 find_package(protobuf CONFIG REQUIRED)
-
 find_package(fmt CONFIG REQUIRED)
+find_package(nlohmann_json CONFIG REQUIRED)
 
 find_path(CPP_HTTPLIB_INCLUDE_PATH httplib.h REQUIRED)
+
 find_path(CPP_INIH_INCLUDE_PATH INIReader.h REQUIRED)
 find_library(CPP_INIH_LIBRARY inih REQUIRED)
 
@@ -17,9 +16,11 @@ target_sources(nuwe_cimiss
 		include/nuwe_cimiss/data.h
 		include/nuwe_cimiss/client.h
 		include/nuwe_cimiss/apiinterface.pb.h
+		include/nuwe_cimiss/connection.h
 		src/client.cpp
 		src/data.cpp
 		src/apiinterface.pb.cc
+		src/connection.cpp
 )
 
 target_include_directories(nuwe_cimiss
@@ -35,6 +36,7 @@ target_link_libraries(nuwe_cimiss
 	PRIVATE
 		protobuf::libprotobuf 
 		fmt::fmt-header-only
+		nlohmann_json::nlohmann_json
 		${CPP_INIH_LIBRARY}
 )
 

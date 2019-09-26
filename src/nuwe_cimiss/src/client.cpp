@@ -1,6 +1,10 @@
-#include "nuwe_cimiss/client.h"
+#include "client.h"
+#include "connection.h"
 
-#include "INIReader.h"
+#include <INIReader.h>
+#include <fmt/format.h>
+
+#include <filesystem>
 
 namespace nuwe_cimiss {
 
@@ -52,20 +56,93 @@ void CimissClient::connect(const std::string& user, const std::string& password)
 {
     user_ = user;
     password_ = password;
+    connection_ = std::make_unique<Connection>(this);
 }
 
-Array2D CimissClient::callAPI_to_array2D(
+std::unique_ptr<Array2D>  CimissClient::callAPI_to_array2D(
     const std::string &interface_id, 
     const ApiParams& params,
     const std::string& server_id)
 {
-    Array2D array_2d{};
+    auto array_2d = std::make_unique<Array2D>();
+    
+    const std::string method = "callAPI_to_array2D";
+
+    auto result = DoRequest(
+        interface_id,
+        method,
+        params,
+        server_id,
+        Connection::GeneratePackSuccessHandler(array_2d.get()),
+        Connection::GeneratePackFailureHandler(array_2d.get()),
+        Connection::GenerateExceptionHandler(array_2d.get())
+    );
 
     return array_2d;
 }
 
 void CimissClient::LoadConfig()
 {
+    const std::filesystem::path config_file_path{ config_file_ };
+    if(!std::filesystem::exists(config_file_path))
+    {
+        throw std::runtime_error("config file is not available.");
+    }
     config_.LoadConfig(config_file_);
+}
+
+std::any CimissClient::DoRequest(
+    const std::string& interface_id, 
+    const std::string& method, 
+    const ApiParams& params,
+    const std::string& server_id, 
+    Connection::HandlerFunction&& success_handler,
+    Connection::HandlerFunction&& failure_handler,
+    Connection::HandlerFunction&& exception_handler)
+{
+    auto fetch_url = GetFetchUrl(interface_id, method, params, server_id);
+    return connection_->MakeRequest(
+        config_.server_ip, 
+        std::stoi(config_.server_port), 
+        fetch_url, 
+        success_handler, 
+        failure_handler, 
+        exception_handler);
+}
+
+std::string CimissClient::GetFetchUrl(
+    const std::string& interface_id, 
+    const std::string& method,
+    const ApiParams& params, 
+    std::string server_id) const
+{
+    if(server_id.empty())
+    {
+        server_id = config_.server_id;
+    }
+
+    auto basic_url = fmt::format(
+        basic_url_,
+        fmt::arg("server_id", server_id)
+    );
+
+    auto fetch_url = fmt::format(
+        "{basic_url}method={method}&userId={user}&pwd={password}&interfaceId={interface_id}"
+        "&language={client_language}&clientversion={client_version}",
+        fmt::arg("basic_url", basic_url),
+        fmt::arg("method", method),
+        fmt::arg("user", user_),
+        fmt::arg("password", password_),
+        fmt::arg("interface_id", interface_id),
+        fmt::arg("client_language", client_language_),
+        fmt::arg("client_version", client_language_)
+    );
+
+    for(const auto& [key, value] : params)
+    {
+        fetch_url += fmt::format("&{key}={value}", fmt::arg("key", key), fmt::arg("value", value));
+    }
+
+    return fetch_url;
 }
 } // namespace nuwe_cimiss
