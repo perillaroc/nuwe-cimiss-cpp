@@ -15,12 +15,14 @@ target_sources(nuwe_cimiss
 	PRIVATE
 		include/nuwe_cimiss/data.h
 		include/nuwe_cimiss/client.h
-		include/nuwe_cimiss/apiinterface.pb.h
 		include/nuwe_cimiss/connection.h
 		src/client.cpp
 		src/data.cpp
+		src/apiinterface.pb.h
 		src/apiinterface.pb.cc
 		src/connection.cpp
+		src/data_convert.h
+		src/data_convert.cpp
 )
 
 target_include_directories(nuwe_cimiss

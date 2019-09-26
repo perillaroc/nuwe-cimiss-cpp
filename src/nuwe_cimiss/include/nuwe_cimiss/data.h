@@ -2,15 +2,15 @@
 #include <cstdint>
 #include <string>
 #include <vector>
-
-#include "nuwe_cimiss/apiinterface.pb.h"
+#include <memory>
 
 
 namespace nuwe_cimiss {
 
+struct RequestInfoPrivate;
 
 struct RequestInfo {
-    RequestInfo() = default;
+    RequestInfo();
     RequestInfo(
         int32_t error_code,
         std::string &error_message,
@@ -23,10 +23,6 @@ struct RequestInfo {
         int32_t col_count
     );
 
-    void LoadFromProtobufObject(const cma::music::pb::RequestInfo &pb_request_info);
-
-    static RequestInfo CreateFromProtobufObject(const cma::music::pb::RequestInfo &request_info);
-
     int32_t error_code = 0;
     std::string error_message;
     std::string request_elements;
@@ -36,12 +32,15 @@ struct RequestInfo {
     int32_t row_count = 0;
     int32_t take_time = 0;
     int32_t col_count = 0;
+
+private:
+    std::unique_ptr<RequestInfoPrivate> d_;
+    friend struct RequestInfoPrivate;
 };
 
 
 struct ResponseData{
     ResponseData() = default;
-    explicit ResponseData(RequestInfo& request_info);
     virtual ~ResponseData() = default;
 
     virtual void LoadFromProtobufContent(const std::string& content) = 0;
@@ -49,19 +48,20 @@ struct ResponseData{
     RequestInfo request;
 };
 
+struct Array2DPrivate;
 
 struct Array2D: public ResponseData {
-    Array2D() = default;
+    Array2D();
 
     void LoadFromProtobufContent(const std::string& content) override;
-
-    void LoadFromProtobufObject(cma::music::pb::RetArray2D* ret_array_2d);
 
     std::vector<std::string> data;
     std::vector<std::string> element_names;
     int32_t row_count;
     int32_t col_count;
 
+private:
+    std::unique_ptr<Array2DPrivate> d_;
 };
 
 

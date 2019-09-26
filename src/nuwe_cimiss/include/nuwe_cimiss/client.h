@@ -1,6 +1,7 @@
 #pragma once
 #include <nuwe_cimiss/data.h>
 
+#include <map>
 #include <memory>
 #include <functional>
 #include <any>
