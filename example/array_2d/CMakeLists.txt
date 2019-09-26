@@ -9,4 +9,5 @@ target_sources(example_array_2d
 
 target_link_libraries(example_array_2d 
 	PRIVATE 
+	NuweCimiss::NuweCimiss
 	CLI11::CLI11)

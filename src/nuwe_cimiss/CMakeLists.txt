@@ -6,7 +6,11 @@ add_library(nuwe_cimiss STATIC)
 # set(Protobuf_USE_STATIC_LIBS ON)
 find_package(protobuf CONFIG REQUIRED)
 
+find_package(fmt CONFIG REQUIRED)
+
 find_path(CPP_HTTPLIB_INCLUDE_PATH httplib.h REQUIRED)
+find_path(CPP_INIH_INCLUDE_PATH INIReader.h REQUIRED)
+find_library(CPP_INIH_LIBRARY inih REQUIRED)
 
 target_sources(nuwe_cimiss
 	PRIVATE
@@ -24,11 +28,14 @@ target_include_directories(nuwe_cimiss
 	PRIVATE
 		${CMAKE_CURRENT_SOURCE_DIR}/include/nuwe_cimiss
 		${CPP_HTTPLIB_INCLUDE_PATH}
+		${CPP_INIH_INCLUDE_PATH}
 )
 
 target_link_libraries(nuwe_cimiss
 	PRIVATE
 		protobuf::libprotobuf 
+		fmt::fmt-header-only
+		${CPP_INIH_LIBRARY}
 )
 
 add_library(NuweCimiss::NuweCimiss ALIAS nuwe_cimiss)
