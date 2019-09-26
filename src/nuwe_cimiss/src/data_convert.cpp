@@ -6,10 +6,8 @@
 namespace nuwe_cimiss {
 
 
-
 RequestInfoPrivate::RequestInfoPrivate(RequestInfo* request_info):
-    p{request_info}
-{
+    p{request_info} {
 
 }
 
@@ -31,12 +29,10 @@ RequestInfo RequestInfoPrivate::CreateFromProtobufObject(const cma::music::pb::R
 }
 
 Array2DPrivate::Array2DPrivate(Array2D* array_2d):
-    p{array_2d}
-{
+    p{array_2d} {
 }
 
-void Array2DPrivate::LoadFromProtobufObject(const cma::music::pb::RetArray2D* ret_array_2d)
-{
+void Array2DPrivate::LoadFromProtobufObject(const cma::music::pb::RetArray2D* ret_array_2d) {
     p->request = RequestInfoPrivate::CreateFromProtobufObject(ret_array_2d->request());
     if (p->request.error_code != 0) {
         return;

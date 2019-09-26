@@ -26,5 +26,4 @@ struct Array2DPrivate {
 };
 
 
-
 } // namespace

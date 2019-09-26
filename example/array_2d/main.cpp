@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
     config.server_id = server_id;
 
     nuwe_cimiss::CimissClient client{config, config_file};
-    client.connect(user, password);
+    client.Connect(user, password);
     auto result = client.callAPI_to_array2D(interface_id, params, server_id);
 
     return 0;

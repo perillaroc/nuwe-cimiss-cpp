@@ -13,11 +13,11 @@ struct RequestInfo {
     RequestInfo();
     RequestInfo(
         int32_t error_code,
-        std::string &error_message,
-        std::string &request_elements,
-        std::string &request_params,
-        std::string &request_time,
-        std::string &response_time,
+        std::string& error_message,
+        std::string& request_elements,
+        std::string& request_params,
+        std::string& request_time,
+        std::string& response_time,
         int32_t row_count,
         int32_t take_time,
         int32_t col_count
@@ -39,7 +39,7 @@ private:
 };
 
 
-struct ResponseData{
+struct ResponseData {
     ResponseData() = default;
     virtual ~ResponseData() = default;
 
@@ -50,7 +50,7 @@ struct ResponseData{
 
 struct Array2DPrivate;
 
-struct Array2D: public ResponseData {
+struct Array2D : public ResponseData {
     Array2D();
 
     void LoadFromProtobufContent(const std::string& content) override;

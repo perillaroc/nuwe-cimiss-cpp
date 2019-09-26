@@ -6,11 +6,7 @@
 #include <functional>
 #include <any>
 
-#include "nuwe_cimiss/connection.h"
-
 namespace nuwe_cimiss {
-
-using ApiParams = std::map<std::string, std::string>;
 
 struct CimissClientConfig {
     std::string server_ip;
@@ -19,16 +15,26 @@ struct CimissClientConfig {
     int connection_timeout = 0;
     int read_timeout = 0;
 
-    void LoadConfig(const std::string &config_file);
+    void LoadConfig(const std::string& config_file);
 };
 
-class CimissClient final{
+class Connection;
+
+using ApiParams = std::map<std::string, std::string>;
+
+class CimissClient final {
 public:
-    explicit CimissClient(const CimissClientConfig &config, const std::string& config_file = "");
+    using HandlerFunction = std::function<std::any(const std::string&)>;
 
-    void connect(const std::string& user, const std::string& password);
+    explicit CimissClient(const CimissClientConfig& config, const std::string& config_file = "");
+    ~CimissClient();
 
-    std::unique_ptr<Array2D> callAPI_to_array2D(const std::string &interface_id, const ApiParams& params, const std::string &server_id="");
+    void Connect(const std::string& user, const std::string& password);
+
+    std::unique_ptr<Array2D> callAPI_to_array2D(
+        const std::string& interface_id,
+        const ApiParams& params,
+        const std::string& server_id = "");
 
 private:
     void LoadConfig();
@@ -38,21 +44,21 @@ private:
         const std::string& method,
         const ApiParams& params,
         const std::string& server_id,
-        Connection::HandlerFunction&& success_handler,
-        Connection::HandlerFunction&& failure_handler,
-        Connection::HandlerFunction&& exception_handler
+        HandlerFunction&& success_handler,
+        HandlerFunction&& failure_handler,
+        HandlerFunction&& exception_handler
     );
 
     std::string GetFetchUrl(
         const std::string& interface_id,
         const std::string& method,
         const ApiParams& params,
-        std::string server_id=""
+        std::string server_id = ""
     ) const;
 
     CimissClientConfig config_;
     std::string config_file_ = "client.conf";
-    std::string user_ ;
+    std::string user_;
     std::string password_;
 
     const std::string client_language_ = "Python";
