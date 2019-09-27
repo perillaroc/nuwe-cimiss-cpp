@@ -44,4 +44,19 @@ void Array2D::LoadFromProtobufContent(const std::string& content) {
     d_->LoadFromProtobufObject(&ret_array_2d);
 }
 
+// GridArray2D
+
+GridArray2D::GridArray2D() {
+    d_ = std::make_unique<GridArray2DPrivate>(this);
+}
+
+void GridArray2D::LoadFromProtobufContent(const std::string& content) {
+    cma::music::pb::RetGridArray2D ret_grid_array_2d;
+    auto result = ret_grid_array_2d.ParseFromString(content);
+    if(!result) {
+        return;
+    }
+    d_->LoadFromProtobufObject(&ret_grid_array_2d);
+}
+
 } // namespace nuwe_cimiss

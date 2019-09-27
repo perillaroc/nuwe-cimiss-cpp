@@ -70,6 +70,27 @@ std::unique_ptr<Array2D> CimissClient::callAPI_to_array2D(
     return array_2d;
 }
 
+std::unique_ptr<GridArray2D> CimissClient::callAPI_to_gridArray2D(
+    const std::string& interface_id,
+    const ApiParams& params, 
+    const std::string& server_id) {
+    auto grid_array_2d = std::make_unique<GridArray2D>();
+
+    const std::string method = "callAPI_to_gridArray2D";
+
+    auto result = DoRequest(
+        interface_id,
+        method,
+        params,
+        server_id,
+        Connection::GeneratePackSuccessHandler(grid_array_2d.get()),
+        Connection::GeneratePackFailureHandler(grid_array_2d.get()),
+        Connection::GenerateExceptionHandler(grid_array_2d.get())
+    );
+
+    return grid_array_2d;
+}
+
 void CimissClient::LoadConfig() {
     const std::filesystem::path config_file_path{config_file_};
     if (!std::filesystem::exists(config_file_path)) {

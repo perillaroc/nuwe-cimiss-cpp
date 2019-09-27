@@ -25,5 +25,15 @@ struct Array2DPrivate {
     Array2D* p;
 };
 
+struct GridArray2D;
+
+struct GridArray2DPrivate {
+    explicit GridArray2DPrivate(GridArray2D* grid_array_2d);
+
+    void LoadFromProtobufObject(const cma::music::pb::RetGridArray2D* ret_grid_array_2d);
+
+    GridArray2D* p;
+};
+
 
 } // namespace

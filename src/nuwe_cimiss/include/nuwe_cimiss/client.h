@@ -36,6 +36,12 @@ public:
         const ApiParams& params,
         const std::string& server_id = "");
 
+
+    std::unique_ptr<GridArray2D> callAPI_to_gridArray2D(
+        const std::string& interface_id,
+        const ApiParams& params,
+        const std::string& server_id = "");
+
 private:
     void LoadConfig();
 

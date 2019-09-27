@@ -7,6 +7,12 @@
 
 namespace nuwe_cimiss {
 
+template <typename T>
+using GridArray = std::vector<std::vector<T>>;
+
+template <typename T>
+using Array = std::vector<T>;
+
 struct RequestInfoPrivate;
 
 struct RequestInfo {
@@ -55,8 +61,8 @@ struct Array2D : public ResponseData {
 
     void LoadFromProtobufContent(const std::string& content) override;
 
-    std::vector<std::string> data;
-    std::vector<std::string> element_names;
+    Array<std::string> data;
+    Array<std::string> element_names;
     int32_t row_count;
     int32_t col_count;
 
@@ -64,10 +70,14 @@ private:
     std::unique_ptr<Array2DPrivate> d_;
 };
 
+struct GridArray2DPrivate;
 
-struct GridArray2D {
-    std::vector<float> data;
-    RequestInfo request;
+struct GridArray2D: public ResponseData {
+    GridArray2D();
+
+    void LoadFromProtobufContent(const std::string& content) override;
+
+    GridArray<float> data;
     float start_lat = 0.0f;
     float start_lon = 0.0f;
     float end_lat = 0.0f;
@@ -76,10 +86,13 @@ struct GridArray2D {
     int32_t lon_count = 0;
     float lon_step = 0.0f;
     float lat_step = 0.0f;
-    std::vector<float> lats;
-    std::vector<float> lons;
+    Array<float> lats;
+    Array<float> lons;
     std::string units;
     std::string user_element_name;
+
+private:
+    std::unique_ptr<GridArray2DPrivate> d_;
 };
 
 } // namespace nuwe_cimiss
